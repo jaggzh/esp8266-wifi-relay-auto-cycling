@@ -54,22 +54,24 @@ void setup() {
 	pinMode(ledPin, OUTPUT);
 	digitalWrite(ledPin, LOW);
 	setup_wifi();
+	setup_wait_wifi(10); // try to wait for wifi 10s if we can
+
 	cur_millis = millis();
 	lag_millis = cur_millis;
 	setup_ota();
-	while (WiFi.status() != WL_CONNECTED) {
-		Serial.println("Not connected");
-		delay(1000);
-		if (tries++ > 20) {
-			Serial.println("20 tries done. Giving up and seeing if we can move on.");
-			break;
-		}
-	}
-	//loop_check_wifi(cur_millis);
+	/* while (WiFi.status() != WL_CONNECTED) { */
+	/* 	Serial.println("Not connected"); */
+	/* 	delay(1000); */
+	/* 	if (tries++ > 20) { */
+	/* 		Serial.println("20 tries done. Giving up and seeing if we can move on."); */
+	/* 		break; */
+	/* 	} */
+	/* } */
 	setup_web();
 }
 void loop() {
 	cur_millis = millis();
+	loop_check_wifi();
 	loop_ota();
 	loop_web();
 	if ((cur_millis-lag_millis) > 1000) {
