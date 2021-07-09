@@ -9,6 +9,11 @@ void setup_web() {
 	server.on("/", http_root);
 	server.on("/reset", http_reset);
 	server.on("/sleep", http_sleep);
+	server.begin();
+}
+
+void loop_web() {
+	server.handleClient();
 }
 
 void http_reset() {

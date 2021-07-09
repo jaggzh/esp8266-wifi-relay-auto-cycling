@@ -8,6 +8,7 @@ extern ESP8266WebServer server;
 #endif // __IN_ESPWEB_CPP
 
 void setup_web();
+void loop_web();   // call repeatedly
 
 void http_root();
 void http_reset(); // reset timer

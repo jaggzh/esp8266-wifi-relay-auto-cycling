@@ -50,7 +50,7 @@ void setup() {
 	int tries=0;
 	Serial.begin(115200);
 	pinMode(relayPin, OUTPUT);
-	digitalWrite(relayPin, LOW);  // make sure relay is off
+	digitalWrite(relayPin, HIGH); // we start in on-cycle
 	pinMode(ledPin, OUTPUT);
 	digitalWrite(ledPin, LOW);
 	setup_wifi();
@@ -71,6 +71,7 @@ void setup() {
 void loop() {
 	cur_millis = millis();
 	loop_ota();
+	loop_web();
 	if ((cur_millis-lag_millis) > 1000) {
 		secs++;
 		lag_millis = cur_millis;
