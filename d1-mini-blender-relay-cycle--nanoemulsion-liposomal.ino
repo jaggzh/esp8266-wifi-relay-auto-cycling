@@ -1,9 +1,10 @@
-#define __MAIN_INO__
+#define __MAIN_INO
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 //#include <ESP8266HTTPUpdateServer.h>
+#include "main.h"
 
 #include "wifi_config.h" // This sets actual values (gross): ssid, password. ip, gw, nm
 #include "printutils.h"
@@ -11,19 +12,8 @@
 #include "wifi.h"
 #include "espweb.h"
 
-/* #define ON_SECS       (10)  // vitamin c (bullet blender) */
-/* #define OFF_SECS      (30) */
-#define ON_SECS       (60*10)  // Nebulizer
-#define OFF_SECS      (60*30)
-
-//#define LONGREST_SECS (20)
-#define STATE_ON       0
-#define STATE_OFF      1
-#define STATE_LONGREST 2
-
-const int relayPin = 5; // 5 is D1Mini's D1
+const int relayPin = RELAY_PIN; // 5 is D1Mini's D1
                         // HIGH is relay on.
-const long interval = 1000;  // pause for two seconds
 unsigned long cur_millis;
 unsigned long lag_millis;
 const int ledPin = LED_BUILTIN;
@@ -44,6 +34,16 @@ void relay_reset_timer() {
 void relay_jump_to_sleep_cycle() {
 	secs = ON_SECS;   // say we're at end of on-time
 	state = STATE_ON; // say we're on so loop will force us off
+}
+
+const char *str_curstate() {
+	return str_state(state);
+}
+
+const char *str_state(int i) {
+	const char *st[STATE_MAX+2] = STRS_STATE; // Ex: { "ON", "OFF", "???" }
+	if (i<=STATE_MAX) return st[i];
+	return st[STATE_MAX+1];
 }
 
 void setup() {
