@@ -4,5 +4,5 @@ I needed to control a medical device (a nebulizer compressor), cycling it on for
 
 ## Notes:
 
-* Make sure to install the ArduinoOTA library from the Arduino library manager. OTA does not work with the Arduino-packaged version.
+* Make sure to install the ArduinoOTA library from the Arduino library manager. The ESP8266 OTA apparently does not work with the Arduino-packaged version.
 * Ignore all the files in reference/ 
