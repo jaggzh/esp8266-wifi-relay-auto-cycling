@@ -17,16 +17,15 @@ void loop_web() {
 }
 
 void http_reset() {
-	relay_reset_timer();
 	server.send(200, "text/plain", "k\n");
+	relay_reset_timer();
 }
 
 void http_sleep() {
-	relay_jump_to_sleep_cycle();
 	server.send(200, "text/plain", "k\n");
+	relay_jump_to_sleep_cycle();
 }
 
 void http_root() {
-	relay_jump_to_sleep_cycle();
 	server.send(200, "text/plain", "Hi\n");
 }
