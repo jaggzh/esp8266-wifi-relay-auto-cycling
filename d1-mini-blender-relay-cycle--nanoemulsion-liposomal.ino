@@ -59,6 +59,7 @@ void setup() {
 	cur_millis = millis();
 	lag_millis = cur_millis;
 	setup_ota();
+	sp(F("Connecting to wife..."));
 	/* while (WiFi.status() != WL_CONNECTED) { */
 	/* 	Serial.println("Not connected"); */
 	/* 	delay(1000); */
