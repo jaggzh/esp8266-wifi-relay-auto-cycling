@@ -3,11 +3,6 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-#ifndef STASSID
-#define STASSID "NationalHealthcare
-#define STAPSK  "your-password"
-#endif
-
 const char* ssid = STASSID;
 const char* password = STAPSK;
 
