@@ -17,12 +17,18 @@ void loop_web() {
 }
 
 void http_reset() {
-	server.send(200, "text/plain", "k\n");
+	server.send(200, "text/html",
+		"<html><head><title>On</title>"
+		"<meta http-equiv=refresh content='2;url=/' /></head>"
+		"<body>Turning ON<br></body></html>");
 	relay_reset_timer();
 }
 
 void http_sleep() {
-	server.send(200, "text/plain", "k\n");
+	server.send(200, "text/html",
+		"<html><head><title>Off</title>"
+		"<meta http-equiv=refresh content='2;url=/' /></head>"
+		"<body>Turning OFF<br></body></html>");
 	relay_jump_to_sleep_cycle();
 }
 
@@ -46,9 +52,13 @@ void http_root() {
 	/* Serial.println(OFF_SECS); */
 	int remsecs = cycle_secs_left();
 	char tmp[941];
-	snprintf(tmp, 940,
+	float perc_on_cycle = ((float)ON_SECS*100)/((float)ON_SECS+OFF_SECS);
+	float perc_now = ((float)secs*100)/((float)ON_SECS+OFF_SECS);
+	snprintf(tmp, 1000,
 		"<!DOCTYPE html><html><head><title>Motor Relay Cycling...</title>"
-		"<meta charset='UTF-8' /><style type='text/css'>"
+		"<meta charset=UTF-8 />"
+		"<meta http-equiv=refresh content=20 />"
+		"<style type=text/css>"
 		".st{float:left;color:white;}"
 		".on_sty  {background:#00a000;}"
 		".bar_sty {background:#a00000; color:white; width:99%%; }"
@@ -63,11 +73,12 @@ void http_root() {
 		"<div>Current time: %dm%ds</div>"
 		"<table class=bar_sty><tr>"
 		//          \/ ON_SECS percentage
-		"<td width='%d%%' class=on_sty>ON</td><td>OFF</td></tr></table>"
+		"<td width='%f%%' class=on_sty>ON</td><td>OFF</td></tr></table>"
 		"<table class=cur_sty><tr>"
 		//          \/ cur_secs percentage
-		"<td width='%d%%'>&nbsp;</td>"
+		"<td width='%f%%'>&nbsp;</td>"
 		"<td width='1%%' class=bar>↑</td><td>&nbsp;</td></tr></table>"
+		"<div>[<a href=/sleep>Off</a> | <a href=/reset>On</a> ]</div>"
 
 		"</body>"
 		"</html>",
@@ -78,8 +89,8 @@ void http_root() {
 			MINSECS(OFF_SECS), SECSSECS(OFF_SECS),
 			MINSECS(ON_SECS+OFF_SECS), SECSSECS(ON_SECS+OFF_SECS),
 			MINSECS(secs), SECSSECS(secs),
-			max(1,(int)(ON_SECS*100)/(ON_SECS+OFF_SECS)),
-			max(1,(int)(secs*100)/(ON_SECS+OFF_SECS))
+			max((float)1.0, perc_on_cycle),
+			max((float)1.0, perc_now)
 		);
 	server.send(200, "text/html", tmp);
 }
