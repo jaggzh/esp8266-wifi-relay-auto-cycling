@@ -7,6 +7,9 @@
 extern ESP8266WebServer server;
 #endif // __IN_ESPWEB_CPP
 
+#define MINSECS(s)  ((int)((s)/60))
+#define SECSSECS(s) ((int)((s)%60))
+
 void setup_web();
 void loop_web();   // call repeatedly
 

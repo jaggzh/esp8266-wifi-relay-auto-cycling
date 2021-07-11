@@ -26,6 +26,20 @@ void http_sleep() {
 	relay_jump_to_sleep_cycle();
 }
 
+int cycle_secs_left() {
+	if (secs < ON_TIME) {
+		return ON_TIME - secs;
+	} else if (secs < ON_TIME + OFF_TIME) {
+		return ON_TIME+OFF_TIME - secs;
+	}
+	return -1;
+}
+
+void minsecs_from_secs(int *minsp, int *secsp, int secs) {
+	*mins = MINSECS(secs);
+	*secs = SECSSECS(secs);
+}
+
 void http_root() {
 	/* Serial.print("State: "); */
 	/* Serial.print(state); */
@@ -36,6 +50,9 @@ void http_root() {
 	/* Serial.print("  Offsecs: "); */
 	/* Serial.println(OFF_SECS); */
 	char tmp[900];
+	int remsecs = cycle_secs_left();
+	int remmins;
+	minsecs_from_secs(&remmins, &remsecs, remsecs);
 	snprintf(tmp, 900,
 		"<!DOCTYPE html><html><head><title>Motor Relay Cycling...</title>"
 		"<meta charset='UTF-8' /><style type='text/css'>"
@@ -48,7 +65,7 @@ void http_root() {
 		"</style>"
 		"</head><body>"
 		"<div>State: %s</div>"
-		"<div>Ontime: %ds, Off-time: %ds, Total-time: %ds</div>"
+		"<div>Ontime: %dm%ds, Off-time: %dm%ds, Total-time: %ds</div>"
 		"<div>Current seconds: %d</div>"
 		"<table class=bar_sty><tr>"
 		//          \/ ON_SECS percentage
@@ -61,6 +78,8 @@ void http_root() {
 		"</body>"
 		"</html>",
 			str_curstate(),
+			MINSECS(ON_SECS), SECSSECS(ON_SECS),
+			MINSECS(OFF_SECS), SECSSECS(OFF_SECS),
 			ON_SECS, OFF_SECS, ON_SECS+OFF_SECS,
 			secs,
 			max(1,(int)(ON_SECS*100)/(ON_SECS+OFF_SECS)),
