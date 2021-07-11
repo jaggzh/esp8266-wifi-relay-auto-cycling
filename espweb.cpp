@@ -27,17 +27,12 @@ void http_sleep() {
 }
 
 int cycle_secs_left() {
-	if (secs < ON_TIME) {
-		return ON_TIME - secs;
-	} else if (secs < ON_TIME + OFF_TIME) {
-		return ON_TIME+OFF_TIME - secs;
+	if (secs < ON_SECS) {
+		return ON_SECS - secs;
+	} else if (secs < ON_SECS + OFF_SECS) {
+		return ON_SECS+OFF_SECS - secs;
 	}
 	return -1;
-}
-
-void minsecs_from_secs(int *minsp, int *secsp, int secs) {
-	*mins = MINSECS(secs);
-	*secs = SECSSECS(secs);
 }
 
 void http_root() {
@@ -49,11 +44,9 @@ void http_root() {
 	/* Serial.print(ON_SECS); */
 	/* Serial.print("  Offsecs: "); */
 	/* Serial.println(OFF_SECS); */
-	char tmp[900];
 	int remsecs = cycle_secs_left();
-	int remmins;
-	minsecs_from_secs(&remmins, &remsecs, remsecs);
-	snprintf(tmp, 900,
+	char tmp[941];
+	snprintf(tmp, 940,
 		"<!DOCTYPE html><html><head><title>Motor Relay Cycling...</title>"
 		"<meta charset='UTF-8' /><style type='text/css'>"
 		".st{float:left;color:white;}"
@@ -65,23 +58,26 @@ void http_root() {
 		"</style>"
 		"</head><body>"
 		"<div>State: %s</div>"
-		"<div>Ontime: %dm%ds, Off-time: %dm%ds, Total-time: %ds</div>"
-		"<div>Current seconds: %d</div>"
+		"<div>Time left %s: %dm%ds</div>"
+		"<div>On-cycle: %dm%ds, Off-cycle: %dm%ds, Total cycle: %dm%ds</div>"
+		"<div>Current time: %dm%ds</div>"
 		"<table class=bar_sty><tr>"
 		//          \/ ON_SECS percentage
- 		"<td width='%d%%' class=on_sty>ON</td><td>OFF</td></tr></table>"
+		"<td width='%d%%' class=on_sty>ON</td><td>OFF</td></tr></table>"
 		"<table class=cur_sty><tr>"
 		//          \/ cur_secs percentage
- 		"<td width='%d%%'>&nbsp;</td>"
- 		"<td width='1%%' class=bar>↑</td><td>&nbsp;</td></tr></table>"
+		"<td width='%d%%'>&nbsp;</td>"
+		"<td width='1%%' class=bar>↑</td><td>&nbsp;</td></tr></table>"
 
 		"</body>"
 		"</html>",
 			str_curstate(),
+			str_curstate(),
+			MINSECS(remsecs), SECSSECS(remsecs),
 			MINSECS(ON_SECS), SECSSECS(ON_SECS),
 			MINSECS(OFF_SECS), SECSSECS(OFF_SECS),
-			ON_SECS, OFF_SECS, ON_SECS+OFF_SECS,
-			secs,
+			MINSECS(ON_SECS+OFF_SECS), SECSSECS(ON_SECS+OFF_SECS),
+			MINSECS(secs), SECSSECS(secs),
 			max(1,(int)(ON_SECS*100)/(ON_SECS+OFF_SECS)),
 			max(1,(int)(secs*100)/(ON_SECS+OFF_SECS))
 		);
